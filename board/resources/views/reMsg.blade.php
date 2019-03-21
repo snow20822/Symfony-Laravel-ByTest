@@ -17,7 +17,7 @@
     <div class="container">
             <nav class="navbar navbar-default">
                 回復對象&內容 <br>
-                姓名:{{$message->name}} 內容:{{$message->content}} 
+                姓名:{{$message['name']}} 內容:{{$message['content']}} 
             </nav>
         </div>
     <div class="panel-body">
@@ -43,7 +43,7 @@
                     <input type="text" name="content" id="content" class="form-control" value="">
                 </div>
             </div>
-            <input type="hidden" name="reId" value="{{$message->id}}">
+            <input type="hidden" name="reId" value="{{$message['id']}}">
 
             <!-- 增加留言按鈕-->
             <div class="form-group">

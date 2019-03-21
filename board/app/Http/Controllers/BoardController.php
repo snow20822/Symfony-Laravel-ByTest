@@ -7,7 +7,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Request;
-use DB;
+use App\Board;
 
 class BoardController extends BaseController
 {
@@ -17,21 +17,13 @@ class BoardController extends BaseController
 	 */
 	public function index()
 	{
-		$message = DB::table('board')
-			->where('reId',0)
+		$message = Board::where('reId',0)
 			->get()
 			->toArray();
 
-		$message = array_map(function ($value) {
-		    return (array)$value;
-		}, $message);
-
 		foreach ($message as $key => $value) {
 		    $message[$key]['reMsg'] =array();
-			$message[$key]['reMsg'] =  DB::table('board')->where('reId',$value['id'])->get()->toArray();
-			$message[$key]['reMsg'] = array_map(function ($value) {
-				return (array)$value;
-			}, $message[$key]['reMsg']);
+			$message[$key]['reMsg'] = Board::where('reId',$value['id'])->get()->toArray();
 		}
 
 	    return view('index')->with('message', $message);
@@ -44,7 +36,7 @@ class BoardController extends BaseController
 	public function add(Request $request)
 	{
 		$data = $request::all();
-		DB::table('board')->insert([
+		Board::insert([
 		    'name' => $data['name'],
 		    'content' => $data['content'],
 		    'addtime' => date("Y-m-d H:i:s")
@@ -61,8 +53,7 @@ class BoardController extends BaseController
 	 */
 	public function update(Request $request,$id)
 	{
-		$data = DB::table('board')
-			->where('id',$id)
+		$data = Board::where('id',$id)
 			->get()
 			->toArray();
 
@@ -76,8 +67,7 @@ class BoardController extends BaseController
 	public function updatePost(Request $request)
 	{
 		$data = $request::all();
-		DB::table('board')
-            ->where('id', $data['id'])
+		Board::where('id', $data['id'])
             ->update([
 			    'name' => $data['name'],
 				'content' => $data['content'],
@@ -95,8 +85,7 @@ class BoardController extends BaseController
 	 */
 	public function reMsg(Request $request,$id)
 	{
-		$data = DB::table('board')
-			->where('id',$id)
+		$data = Board::where('id',$id)
 			->get()
 			->toArray();
 
@@ -110,7 +99,7 @@ class BoardController extends BaseController
 	public function reMsgPost(Request $request)
 	{
 		$data = $request::all();
-		DB::table('board')->insert([
+		Board::insert([
 			'name' => $data['name'],
 			'content' => $data['content'],
 			'addtime' => date("Y-m-d H:i:s"),
@@ -128,8 +117,8 @@ class BoardController extends BaseController
 	public function delete(Request $request)
 	{
 		$id = $request::all();
-		DB::table('board')
-			->where('id', $id)
+		Board::where('id', $id)
+			->orWhere('reId', $id)
 			->delete();
 
 	    return array('type'=>'success');

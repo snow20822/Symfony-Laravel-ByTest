@@ -26,7 +26,7 @@
                 <label for="message-name" class="col-sm-3 control-label">請輸入姓名</label>
 
                 <div class="col-sm-6">
-                    <input type="text" name="name" id="name" class="form-control" value="{{$message->name}}">
+                    <input type="text" name="name" id="name" class="form-control" value="{{$message['name']}}">
                 </div>
             </div>
 
@@ -35,10 +35,10 @@
                 <label for="message-name" class="col-sm-3 control-label">請輸入留言內容</label>
 
                 <div class="col-sm-6">
-                    <input type="text" name="content" id="content" class="form-control" value="{{$message->content}}">
+                    <input type="text" name="content" id="content" class="form-control" value="{{$message['content']}}">
                 </div>
             </div>
-            <input type="hidden" name="id" value="{{$message->id}}">
+            <input type="hidden" name="id" value="{{$message['id']}}">
 
             <!-- 增加留言按鈕-->
             <div class="form-group">

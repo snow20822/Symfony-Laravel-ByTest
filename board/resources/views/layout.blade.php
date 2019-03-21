@@ -17,10 +17,10 @@
             <nav class="navbar navbar-default">
                 <ul>
                     @foreach($message as $key => $data)
-                    <li>姓名:{{$data['name']}} 內容:{{$data['content']}} <a class="btn btn-success" href="/reMsg/{{$data['id']}}">回覆</a><a class="btn btn-success" href="/update/{{$data['id']}}">修改</a><button type="button" onclick="deletemsg('{{$data['id']}}')">刪除</button></li>
+                    <li>姓名:{{$data['name']}} 內容:{{$data['content']}} <a class="btn btn-success" href="{{url('/')}}/reMsg/{{$data['id']}}">回覆</a><a class="btn btn-success" href="{{url('/')}}/update/{{$data['id']}}">修改</a><button type="button" onclick="deletemsg('{{$data['id']}}')">刪除</button></li>
                     @if(isset($data['reMsg']))
                     @foreach($data['reMsg'] as $key => $reMsg)
-                    回覆{{$key+1}} 姓名:{{$reMsg['name']}} 內容:{{$reMsg['content']}} <a class="btn btn-success" href="/update/{{$reMsg['id']}}">修改</a><button type="button" onclick="deletemsg('{{$reMsg['id']}}')">刪除</button><br>
+                    回覆{{$key+1}} 姓名:{{$reMsg['name']}} 內容:{{$reMsg['content']}} <a class="btn btn-success" href="{{url('/')}}/update/{{$reMsg['id']}}">修改</a><button type="button" onclick="deletemsg('{{$reMsg['id']}}')">刪除</button><br>
                     @endforeach
                     @endif
                     @endforeach
