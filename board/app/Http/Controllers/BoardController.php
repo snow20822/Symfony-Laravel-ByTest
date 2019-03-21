@@ -49,7 +49,7 @@ class BoardController extends BaseController
      * @param [integer] $id [要修改資料的id]
      * @return [array] [顯示將要修改的原始資料]
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         $data = Board::where('id', $id)->get()->toArray();
 
@@ -79,7 +79,7 @@ class BoardController extends BaseController
      * @param [integer] $id [被回覆的留言id]
      * @return [array] [被回覆的留言資料]
      */
-    public function reMsg(Request $request,$id)
+    public function reMsg(Request $request, $id)
     {
         $data = Board::where('id', $id)->get()->toArray();
 
