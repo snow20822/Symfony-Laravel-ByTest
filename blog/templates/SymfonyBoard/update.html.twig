@@ -1,0 +1,75 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Offcanvas template for Bootstrap</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/offcanvas/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet"/>
+
+    <!-- Custom styles for this template -->
+    <link href="{{ asset('css/offcanvas.css') }}" rel="stylesheet"/>
+  </head>
+
+  <body class="bg-light">
+
+
+
+
+
+    <main role="main" class="container">
+      <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+          <h6 class="mb-0 text-white lh-100">留言板</h6>
+        </div>
+      </div>
+
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+        <h6 class="border-bottom border-gray pb-2 mb-0">留言訊息
+        <div class="media text-muted pt-3">
+          <p  style="color:red;">
+            <strong class="d-block text-gray-dark">User:{{message.name}}</strong>
+          </p>
+        </div>
+        {{ message.content|raw }}
+        </h6>
+    </div>
+
+    <form class="form-signin" action="/updatePost" method="POST">
+      <div class="form-label-group">
+        <input type="name" name="name" class="form-control" placeholder="Name" required autofocus>
+        <label>Name</label>
+      </div>
+
+      <div class="form-label-group">
+        <textarea id="editor" name="content" class="form-control" placeholder="Content"></textarea>
+        <label>Content</label>
+      </div>
+
+      <div class="checkbox mb-3">
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Send</button>
+      <input type="hidden" name="id" value="{{message.id}}">
+    </form>
+      
+    </main>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
+    <script>
+    ClassicEditor
+        .create( document.querySelector( '#editor' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+    </script>
+  </body>
+</html>
