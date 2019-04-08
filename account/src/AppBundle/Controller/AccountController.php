@@ -69,7 +69,7 @@ class AccountController extends Controller
         }
         $finallyMoney = $User->getMoney();
         $finallyMoney += $data['in_out'];
-        $serial = date('Ymd').substr(implode(NULL, array_map('ord', str_split(substr(md5(uniqid()), 7, 13), 1))), 0, 4);
+        $serial = date('Ymd').$User->getId().substr(implode(NULL, array_map('ord', str_split(substr(md5(uniqid()), 7, 13), 1))), 0, 4);
 
         $entityManager->getConnection()->beginTransaction();
         try {
