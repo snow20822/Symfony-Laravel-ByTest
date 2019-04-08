@@ -5,8 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Record
- *
+ * Record.帳務資料
  * @ORM\Table(name="record")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\RecordRepository")
  */
@@ -14,65 +13,67 @@ class Record
 {
     /**
      * @var int
-     *
+     * [$id 主鍵]
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
+
     private $id;
 
     /**
      * @var float
-     *
+     * [$inOut 變動金額]
      * @ORM\Column(name="in_out", type="float")
      */
     private $inOut;
 
     /**
      * @var string
-     *
+     * [$description 註解]
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
 
     /**
      * @var \DateTime
-     *
+     * [$createdAt 建立時間]
      * @ORM\Column(name="created_at", type="datetime")
      */
     private $createdAt;
 
     /**
      * @var \DateTime
-     *
+     * [$updatedAt 變動時間]
      * @ORM\Column(name="updated_at", type="datetime")
      */
     private $updatedAt;
 
     /**
      * @var float
-     *
+     * [$afterMoney 變動後金額]
      * @ORM\Column(name="after_money", type="float")
      */
     private $afterMoney;
 
     /**
      * @var int
-     *
+     * [$serial 流水號]
      * @ORM\Column(name="serial", type="bigint", unique=true)
      */
     private $serial;
 
     /**
+    .* [$user 會員資料]
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="records")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
+
     /**
-     * Get id
-     *
-     * @return int
+     * [getId 抓取Id]
+     * @return [int] [Id]
      */
     public function getId()
     {
@@ -80,11 +81,9 @@ class Record
     }
 
     /**
-     * Set inOut
-     *
-     * @param float $inOut
-     *
-     * @return Record
+     * [setInOut 設定變動金額]
+     * @param [float] $inOut [變動金額]
+     * @return [array] [帳務資料]
      */
     public function setInOut($inOut)
     {
@@ -94,9 +93,8 @@ class Record
     }
 
     /**
-     * Get inOut
-     *
-     * @return float
+     * [getInOut 抓取變動金額]
+     * @return [float] [變動金額]
      */
     public function getInOut()
     {
@@ -104,11 +102,9 @@ class Record
     }
 
     /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return Record
+     * [setDescription 設定註解]
+     * @param [text] $description [註解]
+     * @return [array] [帳務資料]
      */
     public function setDescription($description)
     {
@@ -118,9 +114,8 @@ class Record
     }
 
     /**
-     * Get description
-     *
-     * @return string
+     * [getDescription 抓取註解]
+     * @return [text] [註解]
      */
     public function getDescription()
     {
@@ -128,11 +123,9 @@ class Record
     }
 
     /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return Record
+     * [setCreatedAt 設定建立時間]
+     * @param [datetime] $createdAt [建立時間]
+     * @return [array] [帳務資料]
      */
     public function setCreatedAt($createdAt)
     {
@@ -142,9 +135,8 @@ class Record
     }
 
     /**
-     * Get createdAt
-     *
-     * @return \DateTime
+     * [getCreatedAt 抓取建立時間]
+     * @return [datetime] [建立時間]
      */
     public function getCreatedAt()
     {
@@ -152,11 +144,9 @@ class Record
     }
 
     /**
-     * Set updatedAt
-     *
-     * @param \DateTime $updatedAt
-     *
-     * @return Record
+     * [setCreatedAt 設定變動時間]
+     * @param [datetime] $createdAt [變動時間]
+     * @return [array] [帳務資料]
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -166,9 +156,8 @@ class Record
     }
 
     /**
-     * Get updatedAt
-     *
-     * @return \DateTime
+     * [getCreatedAt 抓取變動時間]
+     * @return [datetime] [變動時間]
      */
     public function getUpdatedAt()
     {
@@ -182,6 +171,11 @@ class Record
      *
      * @return User
      */
+    /**
+     * [setAfterMoney 設定變動後金額]
+     * @param [float] $afterMoney [變動後金額]
+     * @return [array] [帳務資料]
+     */
     public function setAfterMoney($afterMoney)
     {
         $this->afterMoney = $afterMoney;
@@ -190,9 +184,8 @@ class Record
     }
 
     /**
-     * Get afterMoney
-     *
-     * @return float
+     * [getAfterMoney 抓取變動後金額]
+     * @return [float] [變動後金額]
      */
     public function getAfterMoney()
     {
@@ -200,11 +193,9 @@ class Record
     }
 
     /**
-     * Set serial
-     *
-     * @param int $serial
-     *
-     * @return User
+     * [setSerial 設定流水號]
+     * @param [bigint] $serial [流水號]
+     * @return [array] [帳務資料]
      */
     public function setSerial($serial)
     {
@@ -214,9 +205,8 @@ class Record
     }
 
     /**
-     * Get serial
-     *
-     * @return int
+     * [getSerial 抓取流水號]
+     * @return [bigint] [流水號]
      */
     public function getSerial()
     {
@@ -224,11 +214,9 @@ class Record
     }
 
     /**
-     * Set user
-     *
-     * @param \AppBundle\Entity\User $user
-     *
-     * @return Record
+     * [setUser 設定會員資料]
+     * @param \AppBundle\Entity\User $user [會員資料]
+     * @return [array] [帳務資料]
      */
     public function setUser(\AppBundle\Entity\User $user)
     {
@@ -238,9 +226,8 @@ class Record
     }
 
     /**
-     * Get user
-     *
-     * @return \AppBundle\Entity\User
+     * [getUser 抓取會員資料]
+     * @return [array] [會員資料]
      */
     public function getUser()
     {

@@ -11,13 +11,18 @@ namespace AppBundle\Repository;
 class RecordRepository extends \Doctrine\ORM\EntityRepository
 {
     /**
-     * [getIndexPageData [抓取帳單紀錄]
-     * @return [query] [分頁功能所要query]
+     * [selectByArray [抓取帳單紀錄ByArray]
+     * @return [array] [帳單紀錄]
      */
-    public function getIndexPageData()
+    public function selectByArray($selectArray)
     {
-        $getIndexPageData = $this->createQueryBuilder('Record')->orderBy('Record.id', 'DESC');
+        $query = $this->createQueryBuilder('Record');
+        
+        foreach ($selectArray as $key => $value) {
+            $query->andWhere('Record.'.$key.' = :'.$key.'')->setParameter(''.$key.'', $value);
+        }
+        $selectByArray = $query->orderBy('Record.id', 'DESC')->getQuery();
 
-        return $getIndexPageData;
+        return $selectByArray->getResult();
     }
 }
