@@ -14,15 +14,17 @@ class RecordRepository extends \Doctrine\ORM\EntityRepository
      * [selectByArray [抓取帳單紀錄ByArray]
      * @return [array] [帳單紀錄]
      */
-    public function selectByArray($selectArray)
+    public function selectByArray($selectArray,$limit = NULL)
     {
         $query = $this->createQueryBuilder('Record');
         
         foreach ($selectArray as $key => $value) {
             $query->andWhere('Record.'.$key.' = :'.$key.'')->setParameter(''.$key.'', $value);
         }
-        $selectByArray = $query->orderBy('Record.id', 'DESC')->getQuery();
-
+        $selectByArray = $query->orderBy('Record.id', 'DESC')->getQuery(); 
+        if($limit){
+            $selectByArray->setMaxResults($limit);
+        }
         return $selectByArray->getResult();
     }
 }
