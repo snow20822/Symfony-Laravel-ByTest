@@ -32,7 +32,7 @@ class User
 
     /**
      * [$name 姓名]
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $name;
 
@@ -112,38 +112,5 @@ class User
     public function getMoney()
     {
         return $this->money;
-    }
-
-    /**
-     * [addRecord 新稱帳務紀錄]
-     * @param \AppBundle\Entity\Record $record [帳務紀錄]
-     * @return [array] [會員資料]
-     */
-    public function addRecord(\AppBundle\Entity\Record $record)
-    {
-        $this->records[] = $record;
-
-        return $this;
-    }
-
-    /**
-     * [removeRecord 刪除帳務紀錄]
-     * @param \AppBundle\Entity\Record $record [帳務紀錄]
-     * @return [array] [會員資料]
-     */
-    public function removeRecord(\AppBundle\Entity\Record $record)
-    {
-        $this->records->removeElement($record);
-
-        return $this;
-    }
-
-    /**
-     * [getRecords 抓取帳務資料]
-     * @return [array] [帳務資料]
-     */
-    public function getRecords()
-    {
-        return $this->records;
     }
 }

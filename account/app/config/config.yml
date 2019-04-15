@@ -39,7 +39,10 @@ twig:
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver: pdo_mysql
+        #driver: pdo_mysql
+        driver: pdo_sqlite
+        path: '%kernel.project_dir%/app/sqlite.db'
+        memory:  true
         host: '%database_host%'
         port: '%database_port%'
         dbname: '%database_name%'

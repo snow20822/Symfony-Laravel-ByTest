@@ -8,8 +8,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Doctrine\DBAL\LockMode;
-use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -21,7 +19,7 @@ use AppBundle\Entity\Record;
 class AccountController extends Controller
 {
     /**
-     * @Route("/", name="index")
+     * @Route("/", name="index", methods={"Get"})
      * [index 首頁]
      * @param Request $request [頁數]
      * @param Session $session [當前頁碼]
@@ -51,12 +49,16 @@ class AccountController extends Controller
             $page,
             $singlePageNum
         );
+        $maxPage = ceil($pagination->getTotalItemCount()/$singlePageNum);
+        if ($page > $maxPage and $maxPage >= 1){
+            $this->get('session')->set('pageNum', $maxPage);
 
-        if (($page-1)*$singlePageNum >= $pagination->getTotalItemCount()) {
-            $this->get('session')->set('pageNum', $page-1);
+            return $this->redirectToRoute('index', ['page' => $maxPage]);
+        }else if($page < 1){
+            $this->get('session')->set('pageNum', 1);
 
-            return $this->redirectToRoute('index', ['page' => $page-1]);
-        } else {
+            return $this->redirectToRoute('index', ['page' => 1]);
+        }else{
             $this->get('session')->set('pageNum', $page);
         }
 
@@ -94,31 +96,22 @@ class AccountController extends Controller
         $finallyMoney = $User->getMoney();
         $finallyMoney += $data['in_out'];
         $serial = date('Ymd').$User->getId().substr(implode(NULL, array_map('ord', str_split(substr(md5(uniqid()), 7, 13), 1))), 0, 4);
+        //$entityManager->lock($User, LockMode::OPTIMISTIC);
+        //$entityManager->lock($User, LockMode::PESSIMISTIC_READ);
+        //$entityManager->lock($User, LockMode::PESSIMISTIC_WRIT);
+        
+        $Record = new Record();
+        $Record->setInOut($data['in_out']);
+        $Record->setDescription($data['description']);
+        $Record->setUser($User);
+        $Record->setCreatedAt(new \DateTime());
+        $Record->setUpdatedAt(new \DateTime());
+        $Record->setAfterMoney($finallyMoney);
+        $Record->setSerial($serial);
+        $entityManager->persist($Record);
 
-        $entityManager->getConnection()->beginTransaction();
-        try {
-            //$entityManager->lock($User, LockMode::OPTIMISTIC);
-            //$entityManager->lock($User, LockMode::PESSIMISTIC_READ);
-            //$entityManager->lock($User, LockMode::PESSIMISTIC_WRIT);
-
-            $Record = new Record();
-            $Record->setInOut($data['in_out']);
-            $Record->setDescription($data['description']);
-            $Record->setUser($User);
-            $Record->setCreatedAt(new \DateTime());
-            $Record->setUpdatedAt(new \DateTime());
-            $Record->setAfterMoney($finallyMoney);
-            $Record->setSerial($serial);
-            $entityManager->persist($Record);
-
-            $User->setMoney($finallyMoney);
-            
-            $entityManager->flush();
-            $entityManager->getConnection()->commit();
-        } catch (OptimisticLockException $e) {
-            $entityManager->getConnection()->rollback();
-            throw $e;
-        }
+        $User->setMoney($finallyMoney);
+        $entityManager->flush();
 
         return $this->redirectToRoute('index', ['page' => 1]);
     }
@@ -146,30 +139,19 @@ class AccountController extends Controller
         $finallyMoney += $data['in_out'];
         $serial = date('Ymd').$User->getId().substr(implode(NULL, array_map('ord', str_split(substr(md5(uniqid()), 7, 13), 1))), 0, 4);
 
-        $entityManager->getConnection()->beginTransaction();
-        try {
-            //$entityManager->lock($User, LockMode::OPTIMISTIC);
-            //$entityManager->lock($User, LockMode::PESSIMISTIC_READ);
-            //$entityManager->lock($User, LockMode::PESSIMISTIC_WRIT);
+        $Record = new Record();
+        $Record->setInOut($data['in_out']);
+        $Record->setDescription($data['description']);
+        $Record->setUser($User);
+        $Record->setCreatedAt(new \DateTime());
+        $Record->setUpdatedAt(new \DateTime());
+        $Record->setAfterMoney($finallyMoney);
+        $Record->setSerial($serial);
+        $entityManager->persist($Record);
 
-            $Record = new Record();
-            $Record->setInOut($data['in_out']);
-            $Record->setDescription($data['description']);
-            $Record->setUser($User);
-            $Record->setCreatedAt(new \DateTime());
-            $Record->setUpdatedAt(new \DateTime());
-            $Record->setAfterMoney($finallyMoney);
-            $Record->setSerial($serial);
-            $entityManager->persist($Record);
+        $User->setMoney($finallyMoney);
 
-            $User->setMoney($finallyMoney);
-            
-            $entityManager->flush();
-            $entityManager->getConnection()->commit();
-        } catch (OptimisticLockException $e) {
-            $entityManager->getConnection()->rollback();
-            throw $e;
-        }
+        $entityManager->flush();
 
         return $this->redirectToRoute('index', ['page' => 1]);
     }

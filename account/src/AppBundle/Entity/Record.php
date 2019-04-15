@@ -235,14 +235,13 @@ class Record
     }
 
     protected $name;
- 
+
+    /**
+     * [getName 抓取會員姓名]
+     * @return [string] [會員姓名]
+     */
     public function getName()
     {
         return $this->name;
-    }
- 
-    public function setName($name)
-    {
-        $this->name = $name;
     }
 }

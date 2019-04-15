@@ -14,3 +14,14 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+doctrine:
+    # ...
+    dbal:
+        driver:  pdo_sqlite
+        memory:  true
+        charset: UTF8
+        host:     192.168.109.128
+        dbname:   symfony_account
+        user:     root
+        password: akc20822!
