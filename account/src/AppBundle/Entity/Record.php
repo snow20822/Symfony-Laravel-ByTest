@@ -165,13 +165,6 @@ class Record
     }
 
     /**
-     * Set afterMoney
-     *
-     * @param float $afterMoney
-     *
-     * @return User
-     */
-    /**
      * [setAfterMoney 設定變動後金額]
      * @param [float] $afterMoney [變動後金額]
      * @return [array] [帳務資料]

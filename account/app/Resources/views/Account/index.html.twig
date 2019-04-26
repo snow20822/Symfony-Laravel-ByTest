@@ -67,6 +67,23 @@
 
             </tbody>
           </table>
+          <h2>jsonTable</h2>
+          <table class="table table-striped table-sm">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>流水號</th>
+                <th>姓名</th>
+                <th>存提款金額</th>
+                <th>描述</th>
+                <th>餘額</th>
+                <th>時間</th>
+              </tr>
+            </thead>
+            <tbody id="jsonTable">
+            </tbody>
+          </table>
+          
           <div class="navigation">
           {{ knp_pagination_render(pagination) }}
           </div>
@@ -86,6 +103,25 @@
       <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
       <script>
         feather.replace()
+      </script>
+      <script type="text/javascript">
+          $( document ).ready(function() {
+              var json = {{ response.content|json_encode|raw }};
+              var jsonObj = JSON.parse(json);
+              var startNum = {{ (pagination.currentPageNumber-1)*singlePageNum }};
+              for (var i = 0; i < jsonObj.length; i++) {
+                var updatedAt = jsonObj[i]['updatedAt']['date'].split("."); 
+                $("#jsonTable").append("<tr>");
+                $("#jsonTable").append("<td>"+(startNum+i+1)+"</td>");
+                $("#jsonTable").append("<td>"+jsonObj[i]['serial']+"</td>");
+                $("#jsonTable").append("<td>"+jsonObj[i]['user']['name']+"</td>");
+                $("#jsonTable").append("<td>"+jsonObj[i]['inOut']+"</td>");
+                $("#jsonTable").append("<td>"+jsonObj[i]['description']+"</td>");
+                $("#jsonTable").append("<td>"+jsonObj[i]['afterMoney']+"</td>");
+                $("#jsonTable").append("<td>"+updatedAt[0]+"</td>");
+                $("#jsonTable").append("</tr>");
+              }
+          });
       </script>
   </body>
   </html>

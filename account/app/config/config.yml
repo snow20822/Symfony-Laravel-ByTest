@@ -30,6 +30,7 @@ framework:
     assets: ~
     php_errors:
         log: true
+    
 
 # Twig Configuration
 twig:

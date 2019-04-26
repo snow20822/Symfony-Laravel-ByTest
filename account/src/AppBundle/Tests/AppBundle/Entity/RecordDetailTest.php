@@ -22,5 +22,13 @@ class RecordDetailTest extends WebTestCase
 
         $this->object->setUpdatedAt($date);
         $this->assertEquals($date, $this->object->getUpdatedAt());
+
+        $this->object->setAfterMoney(0);
+        $this->assertEquals(0, $this->object->getAfterMoney());
+
+        $this->object->setSerial(0);
+        $this->assertEquals(0, $this->object->getSerial());
+
+        $this->assertNull($this->object->getUser());
     }
 }

@@ -18,10 +18,11 @@ swiftmailer:
 doctrine:
     # ...
     dbal:
-        driver:  pdo_sqlite
-        memory:  true
-        charset: UTF8
-        host:     192.168.109.128
-        dbname:   symfony_account
-        user:     root
-        password: akc20822!
+        #driver: pdo_mysql
+        #driver: pdo_sqlite
+        driver:   "%test_database_driver%"
+        host:     "%test_database_host%"
+        port:     "%test_database_port%"
+        dbname:   "%test_database_name%"
+        user:     "%test_database_user%"
+        password: "%test_database_password%"

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 /**
  * RecordRepository
  *
@@ -14,17 +15,21 @@ class RecordRepository extends \Doctrine\ORM\EntityRepository
      * [selectByArray [抓取帳單紀錄ByArray]
      * @return [array] [帳單紀錄]
      */
-    public function selectByArray($selectArray,$limit = NULL)
+    public function selectByArray($selectArray, $limit = NULL)
     {
-        $query = $this->createQueryBuilder('Record');
+        $query = $this->createQueryBuilder('Record')->select('Record');
         
         foreach ($selectArray as $key => $value) {
             $query->andWhere('Record.'.$key.' = :'.$key.'')->setParameter(''.$key.'', $value);
         }
-        $selectByArray = $query->orderBy('Record.id', 'DESC')->getQuery(); 
+        $selectByArray = $query->leftJoin('Record.user', 'User')
+                        ->addSelect('User')
+                        ->orderBy('Record.id', 'DESC')
+                        ->getQuery();
         if($limit){
             $selectByArray->setMaxResults($limit);
         }
-        return $selectByArray->getResult();
+
+        return $selectByArray->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
     }
 }

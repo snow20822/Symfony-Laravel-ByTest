@@ -10,5 +10,10 @@ parameters:
     mailer_user: null
     mailer_password: null
     secret: ThisTokenIsNotSoSecretChangeIt
-    #每頁主留言數量
     singlePageNum: 10
+    test_database_driver: pdo_sqlite
+    test_database_host: 192.168.109.128
+    test_database_port: 3306
+    test_database_name: symfony_account_test
+    test_database_user: root
+    test_database_password: akc20822!

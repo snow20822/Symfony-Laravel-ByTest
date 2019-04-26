@@ -7,19 +7,20 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Cache\Adapter\MemcachedAdapter;
-
+use Symfony\Component\Cache\Adapter\RedisAdapter;
+use Doctrine\DBAL\DBALException;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Record;
 
 class AccountController extends Controller
 {
     /**
-     * @Route("/", name="index", methods={"Get"})
+     * @Route("/", name="index", methods={"GET"})
      * [index 首頁]
      * @param Request $request [頁數]
      * @param Session $session [當前頁碼]
@@ -27,19 +28,11 @@ class AccountController extends Controller
      */
     public function index(Request $request, Session $session)
     {
-        /*
-        //test Memcached
-        $client = MemcachedAdapter::createConnection('memcached://localhost');
-        $cache  = new MemcachedAdapter($client, $namespace = 'user', $defaultLifetime = 3600);
-        $testMemcached = $cache->getItem('testMemcached');
-        $testMemcached->set(123);
-        $cache->save($testMemcached);
-        */
-
         $pageNum = $session->get('pageNum', 1);
         $page = $request->query->getInt('page', $pageNum);
         $em = $this->getDoctrine()->getManager();
         $Record = $em->getRepository(Record::class)->selectByArray([]);
+
         //parameters.yml
         $singlePageNum = $this->container->getParameter('singlePageNum');
 
@@ -66,13 +59,19 @@ class AccountController extends Controller
         $record = new Record();
  
         $form = $this->createFormBuilder($record)
-            ->add('name', TextType::class, array('label' => '姓名'))
-            ->add('in_out', IntegerType::class, array('label' => '存提款金額'))
-            ->add('description', TextType::class, array('label' => '描述','required'=> false))
-            ->add('save', SubmitType::class, array('label' => '送出'))
+            ->add('name', TextType::class, ['label' => '姓名'])
+            ->add('in_out', IntegerType::class, ['label' => '存提款金額'])
+            ->add('description', TextType::class, ['label' => '描述','required'=> false])
+            ->add('save', SubmitType::class, ['label' => '送出'])
             ->getForm();
+        $response = new JsonResponse($pagination->getItems());
 
-        return $this->render('Account/index.html.twig', ['pagination' => $pagination, 'singlePageNum' => $singlePageNum, 'form' => $form->createView()]);
+        return $this->render('Account/index.html.twig',[
+            'response' => $response,
+            'pagination' => $pagination,
+            'singlePageNum' => $singlePageNum,
+            'form' => $form->createView()
+       ]);
     }
 
     /**
@@ -84,34 +83,48 @@ class AccountController extends Controller
     {
         $data = $request->request->all();
         $entityManager = $this->getDoctrine()->getManager();
-        $User = $this->getDoctrine()->getRepository(User::class)->findOneBy(['name' => $data['name']]);
-        
-        if (!$User) {
-            $User = new User();
-            $User->setName($data['name']);
-            $User->setMoney(0);
-            $entityManager->persist($User);
-            $entityManager->flush();
-        }
-        $finallyMoney = $User->getMoney();
-        $finallyMoney += $data['in_out'];
-        $serial = date('Ymd').$User->getId().substr(implode(NULL, array_map('ord', str_split(substr(md5(uniqid()), 7, 13), 1))), 0, 4);
-        //$entityManager->lock($User, LockMode::OPTIMISTIC);
-        //$entityManager->lock($User, LockMode::PESSIMISTIC_READ);
-        //$entityManager->lock($User, LockMode::PESSIMISTIC_WRIT);
-        
-        $Record = new Record();
-        $Record->setInOut($data['in_out']);
-        $Record->setDescription($data['description']);
-        $Record->setUser($User);
-        $Record->setCreatedAt(new \DateTime());
-        $Record->setUpdatedAt(new \DateTime());
-        $Record->setAfterMoney($finallyMoney);
-        $Record->setSerial($serial);
-        $entityManager->persist($Record);
 
-        $User->setMoney($finallyMoney);
-        $entityManager->flush();
+        $entityManager->getConnection()->beginTransaction();
+        try {
+            $User = $this->getDoctrine()->getRepository(User::class)->findOneBy(['name' => $data['name']]);
+            
+            if (!$User) {
+                $User = new User();
+                $User->setName($data['name']);
+                $User->setMoney(0);
+                $entityManager->persist($User);
+                $entityManager->flush();
+            }
+            $finallyMoney = $User->getMoney();
+            $finallyMoney += $data['in_out'];
+
+            if($finallyMoney < 0){
+                return $this->redirectToRoute('index', ['page' => 1]);
+            }
+
+            if(isset($data['serial'])){
+                $serial = $data['serial'];
+            }else{
+                $serial = date('Y').strtoupper(dechex(date('m'))).date('d').substr(time(), -5).substr(microtime(), 2, 5).sprintf('%02d', rand(0, 99));
+            }
+
+            $date = new \DateTime('now');
+            $Record = new Record();
+            $Record->setInOut($data['in_out']);
+            $Record->setDescription($data['description']);
+            $Record->setUser($User);
+            $Record->setCreatedAt($date);
+            $Record->setUpdatedAt($date);
+            $Record->setAfterMoney($finallyMoney);
+            $Record->setSerial($serial);
+            $entityManager->persist($Record);
+            $User->setMoney($finallyMoney);
+            
+            $entityManager->flush();
+            $entityManager->getConnection()->commit();
+        } catch (DBALException $e) {
+            $entityManager->getConnection()->rollback();
+        }
 
         return $this->redirectToRoute('index', ['page' => 1]);
     }
@@ -126,33 +139,85 @@ class AccountController extends Controller
         $getFormData = $request->request->all();
         $data = $getFormData['form'];
         $entityManager = $this->getDoctrine()->getManager();
-        $User = $this->getDoctrine()->getRepository(User::class)->findOneBy(['name' => $data['name']]);
-        
-        if (!$User) {
-            $User = new User();
-            $User->setName($data['name']);
-            $User->setMoney(0);
-            $entityManager->persist($User);
+        $entityManager->getConnection()->beginTransaction();
+        try {
+            $User = $this->getDoctrine()->getRepository(User::class)->findOneBy(['name' => $data['name']]);
+            if (!$User) {
+                $User = new User();
+                $User->setName($data['name']);
+                $User->setMoney(0);
+                $entityManager->persist($User);
+                $entityManager->flush();
+            }
+            $finallyMoney = $User->getMoney();
+            $finallyMoney += $data['in_out'];
+
+            if($finallyMoney < 0){
+                return $this->redirectToRoute('index', ['page' => 1]);
+            }
+
+            if (isset($data['serial'])) {
+                $serial = $data['serial'];
+            } else {
+                $serial = date('Y').strtoupper(dechex(date('m'))).date('d').substr(time(), -5).substr(microtime(), 2, 5).sprintf('%02d', rand(0, 99));
+            }
+
+            $date = new \DateTime('now');
+            $Record = new Record();
+            $Record->setInOut($data['in_out']);
+            $Record->setDescription($data['description']);
+            $Record->setUser($User);
+            $Record->setCreatedAt($date);
+            $Record->setUpdatedAt($date);
+            $Record->setAfterMoney($finallyMoney);
+            $Record->setSerial($serial);
+            $entityManager->persist($Record);
+
+            $User->setMoney($finallyMoney);
+
             $entityManager->flush();
+            $entityManager->getConnection()->commit();
+        } catch (DBALException $e) {
+            $entityManager->getConnection()->rollback();
         }
-        $finallyMoney = $User->getMoney();
-        $finallyMoney += $data['in_out'];
-        $serial = date('Ymd').$User->getId().substr(implode(NULL, array_map('ord', str_split(substr(md5(uniqid()), 7, 13), 1))), 0, 4);
-
-        $Record = new Record();
-        $Record->setInOut($data['in_out']);
-        $Record->setDescription($data['description']);
-        $Record->setUser($User);
-        $Record->setCreatedAt(new \DateTime());
-        $Record->setUpdatedAt(new \DateTime());
-        $Record->setAfterMoney($finallyMoney);
-        $Record->setSerial($serial);
-        $entityManager->persist($Record);
-
-        $User->setMoney($finallyMoney);
-
-        $entityManager->flush();
 
         return $this->redirectToRoute('index', ['page' => 1]);
+    }
+
+    /**
+     * @Route("/addByRedis", name="addByRedis", methods={"Post"})
+     * [addByRedis 新增帳務資訊ByRedis]
+     * @param Request $request [帳務資料]
+     */
+    public function addByRedis(Request $request)
+    {
+        $data = $request->request->all();
+        $date = date("Y-m-d H:i:s");
+        $client = RedisAdapter::createConnection('redis://localhost:6379');
+        $User = $this->getDoctrine()->getRepository(User::class)->findOneBy(['name' => $data['name']]);
+        $id = $User->getId();
+
+        $userData = 'userData'.$id;
+        $updateList = 'updateList'.$id;
+        $checkEXISTS = $client->EXISTS($userData);
+        if(!$checkEXISTS){
+            $client->HSET($userData, 'id', $id);
+            $client->HSET($userData, 'version', $User->getVersion());
+            $client->HSET($userData, 'money', $User->getMoney());
+        }
+
+        if(($client->HGET($userData, 'money')+$data['in_out']) < 0){
+            return new Response("Insufficient balance");
+        }else{
+            $serial = date('Y').strtoupper(dechex(date('m'))).date('d').substr(time(), -5).substr(microtime(), 2, 5).sprintf('%02d', rand(0, 99));
+            $client->MULTI();# 标记事务开始
+            $client->HINCRBY($userData, 'money', $data['in_out']);
+            $client->HINCRBY($userData, 'version', 1);
+            $client->EXEC();# 执行
+            $updateJson = '{"user_id":'.$id.',"in_out":"'.$data['in_out'].'","description":"'.$data['description'].'","after_money":"'.$client->HGET($userData, 'money').'","serial":"'.$serial.'","created_at":"'.$date.'","updated_at":"'.$date.'","version":"'.$client->HGET($userData, 'version').'"}';
+            $client->RPUSH($updateList, $updateJson);
+
+            return new Response("addByRedis success");
+        }
     }
 }
