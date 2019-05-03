@@ -141,13 +141,13 @@ class AccountControllerTest extends WebTestCase
             'serial' => $lastRecord[0]['serial'],
             'created_at' => $date,
             'updated_at' => $date,
-            'version' => $lastRecord[0]['version']+1
+            'version' => $lastRecord[0]['version'] + 1
         ];
 
         $updateJson = json_encode($updateArray);
         $this->redisClient->rPush($updateList, $updateJson);
         $this->redisClient->hSet($userData, 'id', $lastRecord[0]['user_id']);
-        $this->redisClient->hSet($userData, 'version', ($lastRecord[0]['version']+1));
+        $this->redisClient->hSet($userData, 'version', ($lastRecord[0]['version'] + 1));
         $this->redisClient->hSet($userData, 'money', $lastRecord[0]['money']);
 
         $input = new ArrayInput(
@@ -189,7 +189,7 @@ class AccountControllerTest extends WebTestCase
         $updateJson = json_encode($updateArray);
         $this->redisClient->rPush($updateList, $updateJson);
         $this->redisClient->hSet($userData, 'id', $lastRecord[0]['user_id']);
-        $this->redisClient->hSet($userData, 'version', $lastRecord[0]['version']+1);
+        $this->redisClient->hSet($userData, 'version', $lastRecord[0]['version'] + 1);
         $this->redisClient->hSet($userData, 'money', $lastRecord[0]['money']);
 
         $input = new ArrayInput(

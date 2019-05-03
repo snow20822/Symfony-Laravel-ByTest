@@ -175,7 +175,7 @@ class AccountFunctionalTest extends WebTestCase
         $this->application->run($input, $output);
         $content = $output->fetch();
         $newData = $this->entityManager->getRepository(Record::class)->selectByArray(['id' => 1], 0, 1);
-        $newVersion = $lastRecord[0]['version']+1;
+        $newVersion = $lastRecord[0]['version'] + 1;
         $this->assertEquals($newVersion, $newData[0]['version']);
 
         $this->assertEquals('response: update 1 times success', $content);
