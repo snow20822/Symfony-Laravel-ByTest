@@ -30,12 +30,12 @@ class AccountController extends Controller
         $pageNum = $session->get('pageNum', 1);
         $page = $request->query->getInt('page', $pageNum);
         $em = $this->getDoctrine()->getManager();
-        $Record = $em->getRepository(Record::class)->selectByArray([]);
+        $record = $em->getRepository(Record::class)->selectByArray([]);
         $singlePageNum = $this->container->getParameter('singlePageNum');
         $paginator = $this->get('knp_paginator');
 
         $pagination = $paginator->paginate(
-            $Record,
+            $record,
             $page,
             $singlePageNum
         );

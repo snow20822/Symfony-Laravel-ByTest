@@ -37,6 +37,7 @@ class RecordService extends Controller
         $userData = 'userData' . $userId;
         $updateList = 'updateList' . $userId;
         $checkEXISTS = $client->exists($updateList);
+
         if (!$checkEXISTS) {
             $response = 'no userData need update';
             $log->addInfo($response);
