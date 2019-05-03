@@ -1,5 +1,5 @@
 <?php 
-namespace Tests\AppBundle\Entity;
+namespace AppBundle\Tests\AppBundle\Entity;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use AppBundle\Entity\User;

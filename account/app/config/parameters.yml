@@ -17,3 +17,5 @@ parameters:
     test_database_name: symfony_account_test
     test_database_user: root
     test_database_password: akc20822!
+    redis_client_type: predis
+    redis_host: localhost

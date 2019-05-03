@@ -22,9 +22,9 @@ class UpgradeAccountCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setDescription('Upgrade Account.')
-        ->setHelp('This command for update account')
-        ->addArgument('userId', InputArgument::REQUIRED, 'Id of update user.')
-        ->addArgument('num',InputArgument::REQUIRED, 'How many loop want');
+            ->setHelp('This command for update account')
+            ->addArgument('userId', InputArgument::REQUIRED, 'Id of update user.')
+            ->addArgument('num', InputArgument::REQUIRED, 'How many loop want');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -34,6 +34,6 @@ class UpgradeAccountCommand extends ContainerAwareCommand
 
         $response = $this->recordService->updateByRedis($userId, $num);
 
-        $output->write('response: '.$response);
+        $output->write('response: ' . $response);
     }
 }

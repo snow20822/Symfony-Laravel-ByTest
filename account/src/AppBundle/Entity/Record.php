@@ -6,67 +6,60 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Record.帳務資料
- * @ORM\Table(name="record")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\RecordRepository")
+ * @ORM\Table(name = "record")
+ * @ORM\Entity(repositoryClass = "AppBundle\Repository\RecordRepository")
  */
 class Record
 {
     /**
-     * @var int
      * [$id 主鍵]
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name = "id", type = "integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy = "AUTO")
      */
 
     private $id;
 
     /**
-     * @var float
      * [$inOut 變動金額]
-     * @ORM\Column(name="in_out", type="float")
+     * @ORM\Column(name = "in_out", type = "float")
      */
     private $inOut;
 
     /**
-     * @var string
      * [$description 註解]
-     * @ORM\Column(name="description", type="text", nullable=true)
+     * @ORM\Column(name = "description", type = "text", nullable = true)
      */
     private $description;
 
     /**
-     * @var \DateTime
      * [$createdAt 建立時間]
-     * @ORM\Column(name="created_at", type="datetime")
+     * @ORM\Column(name = "created_at", type = "datetime")
      */
     private $createdAt;
 
     /**
-     * @var \DateTime
      * [$updatedAt 變動時間]
-     * @ORM\Column(name="updated_at", type="datetime")
+     * @ORM\Column(name = "updated_at", type = "datetime")
      */
     private $updatedAt;
 
     /**
-     * @var float
      * [$afterMoney 變動後金額]
-     * @ORM\Column(name="after_money", type="float")
+     * @ORM\Column(name = "after_money", type = "float")
      */
     private $afterMoney;
 
     /**
-     * @var int
      * [$serial 流水號]
-     * @ORM\Column(name="serial", type="bigint", unique=true)
+     * @ORM\Column(name = "serial", type = "bigint", unique = true)
      */
     private $serial;
 
     /**
     .* [$user 會員資料]
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="records")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity = "AppBundle\Entity\User", inversedBy = "records")
+     * @ORM\JoinColumn(nullable = false)
      */
     private $user;
 

@@ -14,11 +14,10 @@
 
     <testsuites>
         <testsuite name="Project Test Suite">
-            <directory order="1">src/AppBundle/Tests/AppBundle/DataFixtures/</directory>
-            <directory order="2">src/AppBundle/Tests/AppBundle/Entity/</directory>
-            <directory order="3">src/AppBundle/Tests/AppBundle/Command/</directory>
-            <directory order="4">src/AppBundle/Tests/AppBundle/Controller/</directory>
-            <directory order="5">src/AppBundle/Tests/AppBundle/Functional/</directory>
+            <directory order="1">src/AppBundle/Tests/AppBundle/Entity/</directory>
+            <directory order="2">src/AppBundle/Tests/AppBundle/Command/</directory>
+            <directory order="3">src/AppBundle/Tests/AppBundle/Controller/</directory>
+            <directory order="4">src/AppBundle/Tests/AppBundle/Functional/</directory>
         </testsuite>
     </testsuites>
 
@@ -26,7 +25,6 @@
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory>src</directory>
             <exclude>
-                <directory>src/*Bundle/DataFixtures/</directory>
                 <directory>src/*Bundle/Tests/</directory>
             </exclude>
         </whitelist>

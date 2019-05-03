@@ -1,12 +1,12 @@
 <?php 
-namespace AppBundle\DataFixtures;
+namespace AppBundle\Tests\AppBundle\DataFixtures\ORM;
 
 use AppBundle\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 
-class UserFixtures extends Fixture implements OrderedFixtureInterface
+class LoadUserData extends Fixture  implements OrderedFixtureInterface
 {
     /**
      * [load 新增會員紀錄]

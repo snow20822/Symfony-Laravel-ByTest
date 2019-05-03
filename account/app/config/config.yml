@@ -73,3 +73,29 @@ swiftmailer:
 sensio_framework_extra:
    router:
         annotations: false
+
+snc_redis:
+    clients:
+        default:
+            type: predis
+            alias: default
+            dsn: redis://localhost
+            logging: false
+        session:
+            type: predis
+            alias: session
+            dsn: 'redis://%redis_host%/1'
+            logging: false
+        mailer:
+            type: predis
+            alias: mailer
+            dsn: 'redis://%redis_host%/2'
+            logging: false
+        cache:
+            type: predis
+            alias: cache
+            dsn: "redis://localhost/3"
+    session:
+        client: session
+        ttl: 3600
+        locking: false

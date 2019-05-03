@@ -8,48 +8,45 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * User.會員
- *
- * @ORM\Table(name="user")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
+ * @ORM\Table(name = "user")
+ * @ORM\Entity(repositoryClass = "AppBundle\Repository\UserRepository")
  */
 class User
 {
     /**
-     * @var int
      * [$id 主鍵]
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name = "id", type = "integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy = "AUTO")
      */
     private $id;
 
     /**
      * [$version 版本號]
     .* @ORM\Version
-    .* @ORM\Column(name="version", type="integer")
+    .* @ORM\Column(name = "version", type = "integer")
     .*/
     private $version;
 
     /**
      * [$name 姓名]
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(type = "string", length = 255, nullable = false)
      */
     private $name;
 
     /**
-     * @var float
      * [$money 剩餘金額]
-     * @ORM\Column(name="money", type="float")
+     * @ORM\Column(name = "money", type = "float")
      */
     private $money;
 
     /**
      * [$records 帳務紀錄]
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Record", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity = "AppBundle\Entity\Record", mappedBy = "user", orphanRemoval = true)
      */
     private $records;
 
-        public function __construct()
+    public function __construct()
     {
         $this->records = new ArrayCollection();
     }

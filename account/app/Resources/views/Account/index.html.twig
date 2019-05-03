@@ -57,7 +57,7 @@
               <tr>
                 <td>{{ (pagination.currentPageNumber-1)*singlePageNum+key+1 }}</td>
                 <td>{{ Accounting.serial }}</td>
-                <td>{{ Accounting.user.name }}</td>
+                <td>{{ Accounting.name }}</td>
                 <td>{{ Accounting.inOut }}</td>
                 <td>{{ Accounting.description }}</td>
                 <td>{{ Accounting.afterMoney }}</td>
@@ -114,7 +114,7 @@
                 $("#jsonTable").append("<tr>");
                 $("#jsonTable").append("<td>"+(startNum+i+1)+"</td>");
                 $("#jsonTable").append("<td>"+jsonObj[i]['serial']+"</td>");
-                $("#jsonTable").append("<td>"+jsonObj[i]['user']['name']+"</td>");
+                $("#jsonTable").append("<td>"+jsonObj[i]['name']+"</td>");
                 $("#jsonTable").append("<td>"+jsonObj[i]['inOut']+"</td>");
                 $("#jsonTable").append("<td>"+jsonObj[i]['description']+"</td>");
                 $("#jsonTable").append("<td>"+jsonObj[i]['afterMoney']+"</td>");
